@@ -2,6 +2,7 @@ package com.blockchain.api.controller;
 
 import com.blockchain.api.Entity.Block;
 import com.blockchain.api.Entity.Blockchain;
+import com.blockchain.api.repository.BlockRepository;
 import com.blockchain.api.request.BlockRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +14,19 @@ import java.util.List;
 public class BlockChainController {
 
     private final int difficulty = 5;
-    Blockchain blockchain = new Blockchain(difficulty);
+    private final Blockchain blockchain;
+    private final BlockRepository blockRepository;
+
+    public BlockChainController(BlockRepository blockRepository) {
+        this.blockRepository = blockRepository;
+        this.blockchain = new Blockchain(blockRepository, difficulty);
+    }
 
     @DeleteMapping("blockchain")
-    public ResponseEntity<Blockchain> deleteBlockChain() {
-        return ResponseEntity.ok(blockchain = new Blockchain(difficulty));
+    public ResponseEntity<String> deleteBlockChain() {
+        blockRepository.deleteAll();
+        blockchain.addBlock(new Block(0, "Genesis Block", "0"));
+        return ResponseEntity.ok("Blockchain apagada com sucesso e bloco gênesis recriado.");
     }
 
     @GetMapping("blockchain")
@@ -35,7 +44,7 @@ public class BlockChainController {
                         lastBlock.getHash()
                 )
         );
-        return ResponseEntity.status(201).body(blockchain.getLatestBlock().getId() + 1);
+        return ResponseEntity.status(201).body(blockchain.getLatestBlock().getId());
     }
 
     @PutMapping("blockchain")
@@ -44,7 +53,6 @@ public class BlockChainController {
         block.setNonce(blockRequest.getNonce());
         block.setData(blockRequest.getData());
         block.setHash();
-        System.out.println("updated");
         return ResponseEntity.status(200).body(block);
     }
 

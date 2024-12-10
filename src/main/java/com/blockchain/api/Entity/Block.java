@@ -17,6 +17,28 @@ public class Block {
         this.hash = calculateHash();
     }
 
+    public Block(int id, int nonce, String data, String hash, String previousHash) {
+        this.id = id;
+        this.nonce = nonce;
+        this.data = data;
+        this.hash = hash;
+        this.previousHash = previousHash;
+    }
+
+    public BlockEntity toEntity() {
+        return new BlockEntity(id, nonce, data, hash, previousHash);
+    }
+
+    public static Block fromEntity(BlockEntity entity) {
+        return new Block(
+                entity.getId(),
+                entity.getNonce(),
+                entity.getData(),
+                entity.getHash(),
+                entity.getPreviousHash()
+        );
+    }
+
     public String calculateHash() {
         String input = id + previousHash + Integer.toString(nonce) + data;
         return applySHA256(input);
@@ -52,7 +74,6 @@ public class Block {
     public boolean isValidHash(int difficulty) {
         String calculatedHash = calculateHash();
         String target = new String(new char[difficulty]).replace('\0', '0');
-        System.out.println(difficulty);
         return hash.equals(calculatedHash) && hash.substring(0, difficulty).equals(target);
     }
 
