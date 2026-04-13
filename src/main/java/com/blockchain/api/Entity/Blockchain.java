@@ -43,7 +43,7 @@ public class Blockchain {
         List<Block> chain = blockRepository.findAll()
                 .stream()
                 .map(Block::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
 
         for (int i = 0; i < chain.size(); i++) {
             Block currentBlock = chain.get(i);

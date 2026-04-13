@@ -50,10 +50,18 @@ public class BlockChainController {
     @PutMapping("blockchain")
     public ResponseEntity<Block> calculateHash(@RequestBody BlockRequest blockRequest) {
         Block block = blockchain.getBlockById(blockRequest.getId());
+
+        if (block == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         block.setNonce(blockRequest.getNonce());
         block.setData(blockRequest.getData());
         block.setHash();
-        return ResponseEntity.status(200).body(block);
+
+        blockRepository.save(block.toEntity());
+
+        return ResponseEntity.ok(block);
     }
 
     @PutMapping("blockchain/mine")
