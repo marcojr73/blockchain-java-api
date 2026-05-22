@@ -39,7 +39,7 @@ public class Blockchain {
         blockRepository.save(newBlock.toEntity());
     }
 
-    public int invalidChain() {
+    public int isValidChain() {
         List<Block> chain = blockRepository.findAll()
                 .stream()
                 .map(Block::fromEntity)

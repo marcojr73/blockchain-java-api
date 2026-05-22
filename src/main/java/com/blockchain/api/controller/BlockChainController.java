@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/")
 public class BlockChainController {
 
-    private final int difficulty = 5;
+    private final int difficulty = 4;
     private final Blockchain blockchain;
     private final BlockRepository blockRepository;
 
@@ -75,11 +75,12 @@ public class BlockChainController {
         block.setPreviousHash(previousHash);
         block.setHash();
         block.mineBlock(difficulty);
+        blockRepository.save(block.toEntity());
         return ResponseEntity.status(200).body(block);
     }
 
     @GetMapping("blockchain/validate")
     public ResponseEntity<Integer> isChainValid() {
-        return ResponseEntity.status(200).body(blockchain.invalidChain());
+        return ResponseEntity.status(200).body(blockchain.isValidChain());
     }
 }
