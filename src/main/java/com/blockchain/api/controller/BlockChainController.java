@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @RequestMapping("/api/")
 public class BlockChainController {
 
-    private final int difficulty = 4;
+    private final int difficulty = 5;
     private final Blockchain blockchain;
     private final VisitorRepository visitorRepository;
     private final BlockRepository blockRepository;
